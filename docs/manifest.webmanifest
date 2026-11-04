@@ -1,0 +1,17 @@
+{
+  "name": "ayeon wake up! — Morning Brief",
+  "short_name": "Morning Brief",
+  "description": "삼성라이온즈 모닝 브리프",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#031533",
+  "theme_color": "#041331",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/lehy3349-hue/morning-brief-galaxy/main/app/src/main/res/drawable/ayeon_icon_192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}
