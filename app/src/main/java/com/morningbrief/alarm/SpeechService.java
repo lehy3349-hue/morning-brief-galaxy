@@ -27,9 +27,9 @@ public class SpeechService extends Service implements TextToSpeech.OnInitListene
   if(status!=TextToSpeech.SUCCESS){stopSelf();return;}
   tts.setLanguage(Locale.KOREAN);
   Set<Voice> voices=tts.getVoices();
-  if(voices!=null)for(Voice v:voices)if(v.getLocale().getLanguage().equals("ko")&&!v.isNetworkConnectionRequired()&&(v.getName().toLowerCase().contains("female")||v.getName().contains("여성"))){tts.setVoice(v);break;}
+  if(voices!=null)for(Voice v:voices)if(v.getLocale().getLanguage().equals("ko")&&!v.isNetworkConnectionRequired()&&(v.getName().toLowerCase(Locale.ROOT).contains("male")&&!v.getName().toLowerCase(Locale.ROOT).contains("female")||v.getName().contains("남성"))){tts.setVoice(v);break;}
   tts.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_SPEECH).build());
-  tts.setSpeechRate(0.93f);
+  tts.setSpeechRate(1.05f);\n  tts.setPitch(0.87f);
   tts.setOnUtteranceProgressListener(new UtteranceProgressListener(){
    public void onStart(String id){}
    public void onDone(String id){stopSelf();}
