@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
  }
  private void status(String s){runOnUiThread(()->{if(web!=null)web.evaluateJavascript("setStatus("+org.json.JSONObject.quote(s)+")",null);});}
  public class Bridge{
-  @JavascriptInterface public void setDailyAlarm(String time){runOnUiThread(()->{try{String[] a=time.split(":");int h=Integer.parseInt(a[0]),m=Integer.parseInt(a[1]);Calendar c=Calendar.getInstance();c.set(Calendar.HOUR_OF_DAY,h);c.set(Calendar.MINUTE,m);c.set(Calendar.SECOND,0);if(c.getTimeInMillis()<=System.currentTimeMillis())c.add(Calendar.DAY_OF_MONTH,1);getSharedPreferences("alarm",0).edit().putInt("hour",h).putInt("minute",m).apply();schedule(c.getTimeInMillis(),1,false);status("매일 "+time+" 뉴스 알람 설정 완료");}catch(Exception e){status("알람 시간 형식을 확인해 주세요.");}});}
+  @JavascriptInterface public void setDailyAlarm(String time){runOnUiThread(()->{try{String[] a=time.split(":");int h=Integer.parseInt(a[0]),m=Integer.parseInt(a[1]);Calendar c=Calendar.getInstance();c.set(Calendar.HOUR_OF_DAY,h);c.set(Calendar.MINUTE,m);c.set(Calendar.SECOND,0);if(c.getTimeInMillis()<=System.currentTimeMillis())c.add(Calendar.DAY_OF_MONTH,1);getSharedPreferences("alarm",0).edit().putInt("hour",h).putInt("minute",m).putBoolean("enabled",true).apply();schedule(c.getTimeInMillis(),1,false);status("매일 "+time+" 뉴스 알람 설정 완료");}catch(Exception e){status("알람 시간 형식을 확인해 주세요.");}});}
   @JavascriptInterface public void testAlarm(){runOnUiThread(()->{schedule(System.currentTimeMillis()+60000,3,true);status("1분 뒤 테스트 알람 예약. 화면을 꺼서 확인하세요.");});}
   @JavascriptInterface public void refreshNews(){MainActivity.this.refreshNews();}
   @JavascriptInterface public void refreshWeather(String city){MainActivity.this.refreshWeather(city);}
