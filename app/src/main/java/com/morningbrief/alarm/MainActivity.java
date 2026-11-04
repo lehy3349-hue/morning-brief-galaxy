@@ -16,10 +16,6 @@ public class MainActivity extends Activity {
  private final String PAGE="https://raw.githubusercontent.com/lehy3349-hue/morning-brief-galaxy/main/docs/index.html";
  @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(Color.rgb(3,12,37));getWindow().setNavigationBarColor(Color.rgb(3,12,37));
   LinearLayout layout=new LinearLayout(this);layout.setOrientation(1);layout.setBackgroundColor(Color.rgb(3,12,37));
-  LinearLayout bar=new LinearLayout(this);
-  Button reload=new Button(this);reload.setText("↻ 디자인 업데이트");bar.addView(reload,new LinearLayout.LayoutParams(0,-2,1));
-  Button news=new Button(this);news.setText("↻ 뉴스 새로고침");bar.addView(news,new LinearLayout.LayoutParams(0,-2,1));
-  layout.addView(bar);
   web=new WebView(this);web.setBackgroundColor(Color.rgb(3,12,37));web.getSettings().setJavaScriptEnabled(true);web.getSettings().setDomStorageEnabled(true);web.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
   web.addJavascriptInterface(new Bridge(),"Android");
   web.setWebViewClient(new WebViewClient(){
@@ -27,7 +23,6 @@ public class MainActivity extends Activity {
    @Override public void onPageFinished(WebView view,String url){refreshNews();refreshWeather(getSharedPreferences("weather",0).getString("city","수원"));}
   });
   layout.addView(web,new LinearLayout.LayoutParams(-1,0,1));setContentView(layout);
-  reload.setOnClickListener(v->loadLiveDesign());news.setOnClickListener(v->refreshNews());
   loadBundledDesign();loadLiveDesign();
  }
  private void loadBundledDesign(){try(InputStream in=getAssets().open("index.html")){ByteArrayOutputStream out=new ByteArrayOutputStream();byte[] b=new byte[4096];int n;while((n=in.read(b))!=-1)out.write(b,0,n);render(new String(out.toByteArray(),"UTF-8"));}catch(Exception e){android.util.Log.e("MorningBrief","Bundled UI error",e);}}
@@ -50,6 +45,7 @@ public class MainActivity extends Activity {
   @JavascriptInterface public void setDailyAlarm(String time){runOnUiThread(()->{try{String[] a=time.split(":");int h=Integer.parseInt(a[0]),m=Integer.parseInt(a[1]);Calendar c=Calendar.getInstance();c.set(Calendar.HOUR_OF_DAY,h);c.set(Calendar.MINUTE,m);c.set(Calendar.SECOND,0);if(c.getTimeInMillis()<=System.currentTimeMillis())c.add(Calendar.DAY_OF_MONTH,1);getSharedPreferences("alarm",0).edit().putInt("hour",h).putInt("minute",m).putBoolean("enabled",true).apply();schedule(c.getTimeInMillis(),1,false);status("매일 "+time+" 뉴스 알람 설정 완료");}catch(Exception e){status("알람 시간 형식을 확인해 주세요.");}});}
   @JavascriptInterface public void testAlarm(){runOnUiThread(()->{schedule(System.currentTimeMillis()+60000,3,true);status("1분 뒤 테스트 알람 예약. 화면을 꺼서 확인하세요.");});}
   @JavascriptInterface public void refreshNews(){MainActivity.this.refreshNews();}
+  @JavascriptInterface public String getAlarmTime(){android.content.SharedPreferences p=getSharedPreferences("alarm",0);return String.format(java.util.Locale.ROOT,"%02d:%02d",p.getInt("hour",7),p.getInt("minute",0));}
   @JavascriptInterface public void refreshWeather(String city){MainActivity.this.refreshWeather(city);}
   @JavascriptInterface public String getWeatherCity(){return getSharedPreferences("weather",0).getString("city","수원");}
   @JavascriptInterface public void speakNews(){runOnUiThread(()->{Intent i=new Intent(MainActivity.this,SpeechService.class);if(Build.VERSION.SDK_INT>=26)startForegroundService(i);else startService(i);status("뉴스 음성 브리핑을 준비 중입니다.");});}
