@@ -6,6 +6,7 @@ import android.provider.Settings;
 import android.webkit.*;
 import android.widget.*;
 import android.graphics.Color;
+import android.net.Uri;
 import java.net.*;
 import java.io.*;
 import java.util.*;
